@@ -4,7 +4,9 @@
     {
         public void RegisterDependencies(ImADependencyRegistry dependencyRegistry)
         {
-            
+            dependencyRegistry
+                .WithHNecessaireResiliency()
+                ;
         }
     }
 }
