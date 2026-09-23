@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="H.Necessaire.Resiliency.Abstractions/H.Necessaire.Resiliency.Abstractions.csproj" />
+  <Project Path="H.Necessaire.Resiliency.CLI/H.Necessaire.Resiliency.CLI.csproj" />
+  <Project Path="H.Necessaire.Resiliency/H.Necessaire.Resiliency.csproj" />
+</Solution>
