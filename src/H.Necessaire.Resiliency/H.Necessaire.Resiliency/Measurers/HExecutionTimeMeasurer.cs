@@ -63,11 +63,10 @@ namespace H.Necessaire.Resiliency.Measurers
 
         public static ImAnHResiliencyMeasurementContext NewContext(string id, Func<CancellationToken, Task> executionLogic, TimeSpan? executionTimeout = null)
         {
-            return new HResiliencyMeasurementContext(new Dictionary<string, object>() {
+            return new HResiliencyMeasurementContext(id, new Dictionary<string, object>() {
                 { contextKeyExecutionLogic, executionLogic },
                 { contextKeyExecutionTimeout, executionTimeout },
-            })
-            { ID = id };
+            });
         }
     }
 }

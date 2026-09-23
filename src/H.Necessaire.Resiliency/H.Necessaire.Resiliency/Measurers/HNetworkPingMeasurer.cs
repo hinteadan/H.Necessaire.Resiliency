@@ -146,13 +146,12 @@ namespace H.Necessaire.Resiliency.Measurers
 
         public static ImAnHResiliencyMeasurementContext NewContext(string id, string host, int? totalNumberOfPingsToPerform = null, TimeSpan? timeoutPerPing = null, TimeSpan? timeoutPerTotalPings = null)
         {
-            return new HResiliencyMeasurementContext(new Dictionary<string, object>() {
+            return new HResiliencyMeasurementContext(id, new Dictionary<string, object>() {
                 { contextKeyHost, host },
                 { contextKeyTotalNumberOfPingsToPerform, totalNumberOfPingsToPerform },
                 { contextKeyTimeoutPerPing, timeoutPerPing },
                 { contextKeyTimeoutPerTotalPings, timeoutPerTotalPings },
-            })
-            { ID = id };
+            });
         }
     }
 }

@@ -13,6 +13,14 @@ namespace H.Necessaire.Resiliency.DataModels
         {
             this.contextDictionary = contextDictionary ?? new Dictionary<string, object>();
         }
+        public HResiliencyMeasurementContext(string id) : this()
+        {
+            ID = id;
+        }
+        public HResiliencyMeasurementContext(string id, IReadOnlyDictionary<string, object> contextDictionary) : this(contextDictionary)
+        {
+            ID = id;
+        }
 
         public static implicit operator HResiliencyMeasurementContext(Dictionary<string, object> contextDictionary)
             => new HResiliencyMeasurementContext(contextDictionary);
