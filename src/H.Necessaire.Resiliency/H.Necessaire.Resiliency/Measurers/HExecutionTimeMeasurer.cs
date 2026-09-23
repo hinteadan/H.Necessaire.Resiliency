@@ -67,7 +67,7 @@ namespace H.Necessaire.Resiliency.Measurers
 
             NumberInterval executionInterval = (0, executionTimeout.Ticks);
             double myriadValue = new DataNormalizer(executionInterval, HResiliencyMeasurement.Myriad).Do(measurementResult.Payload.Value.Ticks);
-            double flippedMyriadValue = HResiliencyMeasurement.Myriad.Min.Value + HResiliencyMeasurement.Myriad.Max.Value - myriadValue;
+            double flippedMyriadValue = myriadValue.FlipIntervalValueToOppositeEnd(HResiliencyMeasurement.Myriad);
 
             short score = (short)Math.Ceiling(flippedMyriadValue);
 
