@@ -143,7 +143,7 @@ namespace H.Necessaire.Resiliency.Abstractions.Bases
 
         async Task MeasureAndUpdateServiceResiliencyMeasurement(ImAnHServiceResiliencyProvider<TService> service, ImAnHResiliencyMeasurer measurer)
         {
-            await (await HSafe.Run<OperationResult>(async () =>
+            await HSafe.Run<OperationResult>(async () =>
             {
 
                 if (!(await service.GetLatestResiliencyMeasurementContext()).Ref(out var ctxRes, out var ctx))
@@ -158,7 +158,10 @@ namespace H.Necessaire.Resiliency.Abstractions.Bases
 
                 return true;
 
-            })).UnwrapToFirstFailOrLastWin().LogError(log, string.Join("", nameof(MeasureAndUpdateServiceResiliencyMeasurement), " for ", service.ID));
+            })
+            .UnwrapToFirstFailOrLastWin()
+            .LogError(log, string.Join("", nameof(MeasureAndUpdateServiceResiliencyMeasurement), " for ", service.ID))
+            ;
         }
 
         OperationResult AreLatestMeasurementsStillValid()
@@ -180,7 +183,7 @@ namespace H.Necessaire.Resiliency.Abstractions.Bases
         }
 
         async Task<OperationResult> SafelyMeasureAndUpdateServicesResiliencyIfNecessary()
-            => await (await HSafe.Run(MeasureAndUpdateServicesResiliencyIfNecessary))
+            => await HSafe.Run(MeasureAndUpdateServicesResiliencyIfNecessary)
             .UnwrapToFirstFailOrLastWin()
             .LogError(log, nameof(MeasureAndUpdateServicesResiliencyIfNecessary))
             ;

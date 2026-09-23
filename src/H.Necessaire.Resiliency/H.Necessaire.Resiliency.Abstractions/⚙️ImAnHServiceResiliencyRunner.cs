@@ -79,7 +79,7 @@ namespace H.Necessaire.Resiliency.Abstractions
             if (action is null)
                 return "Action to run is unspecified";
 
-            return (HSafe.Run<OperationResult>(() => {
+            return HSafe.Run<OperationResult>(() => {
 
                 KeyValuePair<string, TService>[] services = servicesOrderedByResiliencyGrabber?.Invoke();
                 if (services.IsEmpty())
@@ -99,7 +99,7 @@ namespace H.Necessaire.Resiliency.Abstractions
 
                 return opResults.Merge();
 
-            })).UnwrapToFirstFailOrLastWin();
+            }).UnwrapToFirstFailOrLastWin();
         }
 
         async Task<OperationResult> ResilientlyRunTask(Func<TService, Task> action)
@@ -107,7 +107,7 @@ namespace H.Necessaire.Resiliency.Abstractions
             if (action is null)
                 return "Action to run is unspecified";
 
-            return (await HSafe.Run<OperationResult>(async () => {
+            return await HSafe.Run<OperationResult>(async () => {
 
                 KeyValuePair<string, TService>[] services = servicesOrderedByResiliencyGrabber?.Invoke();
                 if (services.IsEmpty())
@@ -127,7 +127,7 @@ namespace H.Necessaire.Resiliency.Abstractions
 
                 return opResults.Merge();
 
-            })).UnwrapToFirstFailOrLastWin();
+            }).UnwrapToFirstFailOrLastWin();
         }
     }
 }

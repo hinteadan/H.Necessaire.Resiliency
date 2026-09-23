@@ -15,12 +15,12 @@ namespace H.Necessaire.Resiliency
             : base(instanceFactory)
         {
             this.id = id;
-            this.contextProvider = async () => (await HSafe.Run(contextProvider)).UnwrapToFirstFailOrLastWin();
+            this.contextProvider = async () => await HSafe.Run(contextProvider).UnwrapToFirstFailOrLastWin();
         }
         public HServiceResiliencyProvider(string id, Func<Task<OperationResult<ImAnHResiliencyMeasurementContext>>> contextProvider)
         {
             this.id = id;
-            this.contextProvider = async () => (await HSafe.Run(contextProvider)).UnwrapToFirstFailOrLastWin();
+            this.contextProvider = async () => await HSafe.Run(contextProvider).UnwrapToFirstFailOrLastWin();
         }
 
 

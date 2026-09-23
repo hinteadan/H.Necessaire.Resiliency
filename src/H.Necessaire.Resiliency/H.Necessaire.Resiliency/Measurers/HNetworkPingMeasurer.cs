@@ -28,7 +28,7 @@ namespace H.Necessaire.Resiliency.Measurers
             if (measurementContext.IsEmpty())
                 return "Measurement context is empty";
 
-            return (await HSafe.Run<OperationResult<ImAnHResiliencyMeasurement>>(async () =>
+            return await HSafe.Run<OperationResult<ImAnHResiliencyMeasurement>>(async () =>
             {
 
                 if (!measurementContext.GetValueFor<string>(contextKeyHost).Ref(out var hostRes, out var host))
@@ -49,7 +49,7 @@ namespace H.Necessaire.Resiliency.Measurers
                     for (int pingIndex = 0; pingIndex < totalNumberOfPingsToPerform; pingIndex++)
                     {
                         pingResultsWithTimeInMilliseconds.Add(
-                            (await HSafe.Run<OperationResult<long>>(async () =>
+                            await HSafe.Run<OperationResult<long>>(async () =>
                             {
                                 if (totalPingsTimeoutCts.IsCancellationRequested)
                                     return "Total pings timed out";
@@ -61,7 +61,7 @@ namespace H.Necessaire.Resiliency.Measurers
                                 }
 
                                 return pingReply.RoundtripTime;
-                            }))
+                            })
                             .UnwrapToFirstFailOrLastWin()
                         );
                     }
@@ -69,7 +69,7 @@ namespace H.Necessaire.Resiliency.Measurers
 
                 return CalculatePingResiliencyMeasurement(measurementContext, pingResultsWithTimeInMilliseconds);
 
-            })).UnwrapToFirstFailOrLastWin();
+            }).UnwrapToFirstFailOrLastWin();
         }
 
         static OperationResult<ImAnHResiliencyMeasurement> CalculatePingResiliencyMeasurement(ImAnHResiliencyMeasurementContext measurementContext, IReadOnlyCollection<OperationResult<long>> pingResults)

@@ -20,7 +20,7 @@ namespace H.Necessaire.Resiliency.Measurers
             if (measurementContext.IsEmpty())
                 return "Measurement context is empty";
 
-            return (await HSafe.Run<OperationResult<ImAnHResiliencyMeasurement>>(async () =>
+            return await HSafe.Run<OperationResult<ImAnHResiliencyMeasurement>>(async () =>
             {
 
                 ReadExecutionParamsFromContext(measurementContext, out var executionLogic, out var executionTimeout);
@@ -28,34 +28,11 @@ namespace H.Necessaire.Resiliency.Measurers
                 if (executionLogic is null)
                     return $"Execution logic to be measured is not defined. It must be defined in the context, as Func<CancellationToken, Task> under the key: {contextKeyExecutionLogic}";
 
-                using (var timeoutCts = new CancellationTokenSource(executionTimeout))
-                {
-                    OperationResult<TimeSpan?> executionResult = "Not yet started";
-                    Task executionTask = Task.Run(async () =>
-                    {
-                        executionResult = await HSafe.Run(async () =>
-                        {
-                            TimeSpan? executionDuration = null;
-                            using (new PreciseTimeMeasurement(x => executionDuration = x))
-                            {
-                                await executionLogic.Invoke(timeoutCts.Token);
-                            }
-                            return executionDuration;
-                        });
-                    });
-                    Task timeoutTask = HSafe.Run(async () => await Task.Delay(Timeout.Infinite, timeoutCts.Token));
-                    Task completedTask = await Task.WhenAny(executionTask, timeoutTask);
+                OperationResult<TimeSpan?> measurementResult = await HSafe.RunTimeboxed(executionTimeout, executionLogic);
 
-                    OperationResult<TimeSpan?> measurementResult
-                        = completedTask == timeoutTask
-                        ? $"Execution timed out after {executionTimeout}"
-                        : executionResult
-                        ;
+                return CalculateResiliencyMeasurement(measurementContext, measurementResult, executionTimeout);
 
-                    return CalculateResiliencyMeasurement(measurementContext, measurementResult, executionTimeout);
-                }
-
-            }))
+            })
             .UnwrapToFirstFailOrLastWin()
             ;
         }
