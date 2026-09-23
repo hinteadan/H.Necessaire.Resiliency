@@ -128,17 +128,20 @@ namespace H.Necessaire.Resiliency.Measurers
 
         static void ReadPingParamsFromContext(ImAnHResiliencyMeasurementContext measurementContext, out int totalNumberOfPingsToPerform, out TimeSpan timeoutPerPing, out TimeSpan timeoutPerTotalPings)
         {
-            totalNumberOfPingsToPerform = measurementContext.GetValueOrDefaultFor<int?>(contextKeyTotalNumberOfPingsToPerform) ?? defaultTotalNumberOfPingsToPerform;
-            if (totalNumberOfPingsToPerform < 1) totalNumberOfPingsToPerform = 1;
-            else if (totalNumberOfPingsToPerform > 17) totalNumberOfPingsToPerform = 17;
+            totalNumberOfPingsToPerform 
+                = (measurementContext.GetValueOrDefaultFor<int?>(contextKeyTotalNumberOfPingsToPerform) ?? defaultTotalNumberOfPingsToPerform)
+                .EnsureMinMax(1, 17)
+                ;
 
-            timeoutPerPing = measurementContext.GetValueOrDefaultFor<TimeSpan?>(contextKeyTimeoutPerPing) ?? defaultTimeoutPerPing;
-            if (timeoutPerPing < TimeSpan.Zero) timeoutPerPing = defaultTimeoutPerPing;
-            else if (timeoutPerPing > maxTimeoutPerPing) timeoutPerPing = maxTimeoutPerPing;
+            timeoutPerPing 
+                = (measurementContext.GetValueOrDefaultFor<TimeSpan?>(contextKeyTimeoutPerPing) ?? defaultTimeoutPerPing)
+                .EnsureMinMax(TimeSpan.Zero, maxTimeoutPerPing, valueIfLessThanMin: defaultTimeoutPerPing)
+                ;
 
-            timeoutPerTotalPings = measurementContext.GetValueOrDefaultFor<TimeSpan?>(contextKeyTimeoutPerTotalPings) ?? defaultTimeoutPerTotalPings;
-            if (timeoutPerTotalPings < TimeSpan.Zero) timeoutPerTotalPings = defaultTimeoutPerTotalPings;
-            else if (timeoutPerTotalPings > maxTimeoutPerTotalPings) timeoutPerTotalPings = maxTimeoutPerTotalPings;
+            timeoutPerTotalPings
+                = (measurementContext.GetValueOrDefaultFor<TimeSpan?>(contextKeyTimeoutPerTotalPings) ?? defaultTimeoutPerTotalPings)
+                .EnsureMinMax(TimeSpan.Zero, maxTimeoutPerTotalPings, valueIfLessThanMin: defaultTimeoutPerTotalPings)
+                ;
         }
 
         public static ImAnHResiliencyMeasurementContext NewContext(string id, string host, int? totalNumberOfPingsToPerform = null, TimeSpan? timeoutPerPing = null, TimeSpan? timeoutPerTotalPings = null)

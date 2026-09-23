@@ -78,9 +78,10 @@ namespace H.Necessaire.Resiliency.Measurers
         {
             executionLogic = measurementContext.GetValueOrDefaultFor<Func<CancellationToken, Task>>(contextKeyExecutionLogic);
 
-            executionTimeout = measurementContext.GetValueOrDefaultFor<TimeSpan?>(contextKeyExecutionTimeout) ?? defaultExecutionTimeout;
-            if (executionTimeout < TimeSpan.Zero) executionTimeout = defaultExecutionTimeout;
-            else if (executionTimeout > maxExecutionTimeout) executionTimeout = maxExecutionTimeout;
+            executionTimeout 
+                = (measurementContext.GetValueOrDefaultFor<TimeSpan?>(contextKeyExecutionTimeout) ?? defaultExecutionTimeout)
+                .EnsureMinMax(TimeSpan.Zero, maxExecutionTimeout, valueIfLessThanMin: defaultExecutionTimeout)
+                ;
         }
 
         public static ImAnHResiliencyMeasurementContext NewContext(string id, Func<CancellationToken, Task> executionLogic, TimeSpan? executionTimeout = null)
