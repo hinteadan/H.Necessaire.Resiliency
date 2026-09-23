@@ -4,10 +4,11 @@ namespace H.Necessaire.Resiliency.Abstractions
 {
     public static class Xtnx
     {
-        static TimeSpan EnsureMinMax(this TimeSpan value, TimeSpan min, bool isMinIncludedAsValid, TimeSpan max, bool isMaxIncludedAsValid, TimeSpan valueIfLessThanMin,TimeSpan valueIfGreaterThanMax)
+        public static T EnsureMinMax<T>(this T value, T min, bool isMinIncludedAsValid, T max, bool isMaxIncludedAsValid, T valueIfLessThanMin, T valueIfGreaterThanMax)
+            where T : IComparable<T>
         {
-            bool isValueTooLow = !(isMinIncludedAsValid ? value >= min : value > min);
-            bool isValueTooHigh = !(isMaxIncludedAsValid ? value <= max : value < max);
+            bool isValueTooLow = !(isMinIncludedAsValid ? value.CompareTo(min) >= 0 : value.CompareTo(min) > 0);
+            bool isValueTooHigh = !(isMaxIncludedAsValid ? value.CompareTo(max) <= 0 : value.CompareTo(max) < 0);
             bool isValueValid = !isValueTooLow && !isValueTooHigh;
             if (isValueValid)
                 return value;
