@@ -19,7 +19,12 @@ namespace H.Necessaire.Resiliency.Debugging
 
         public async Task Debug()
         {
-            var val = TimeSpan.FromSeconds(7).EnsureMinMax(TimeSpan.Zero, true, TimeSpan.FromSeconds(10), true, TimeSpan.FromSeconds(3), TimeSpan.FromSeconds(10));
+
+            var val = new int[] {
+                13.EnsureMinMax(5, 9),
+                13.EnsureMinMax(5, 15),
+                13.EnsureMinMax(15, 16),
+            };
             return;
 
             using (var _t = await log.LogInfoDuration(nameof(HNecessaireResiliencyDebugger), "🐞"))
