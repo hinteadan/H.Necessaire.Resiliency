@@ -26,7 +26,7 @@ At app level (C#) this translates into a `class` registered as a dependency.
         1. Which internally will have
             1. `ImAnHServiceResiliencyProvider<MyResilientDep>[] resilientServices = null;`
             1. `ImAnHResiliencyMeasurer measurer = null;`
-        1. Refering the `resilientServices`
+        1. Refering the `resilientServices` in `public override void ReferDependencies(ImADependencyProvider deps)`
             1. Like such:
             ```csharp
             resilientServices = new ImAnHServiceResiliencyProvider<MyResilientDep>[] {
@@ -34,7 +34,7 @@ At app level (C#) this translates into a `class` registered as a dependency.
                 "B".Morph(id => deps.NewHServiceResiliencyProvider(id, x => new MyResilientDep(id), HExecutionTimeMeasurer.NewContext(id,...))),
             }
             ```
-        1. Refering the `measurer = dependencyProvider.Get<HExecutionTimeMeasurer>();`
+        1. Refering the `measurer = dependencyProvider.Get<HExecutionTimeMeasurer>();` in `public override void ReferDependencies(ImADependencyProvider deps)`
             1. More measurers are to come out of the box
             1. A custom measurer can also be implemented: `class MyCustomMeasurer : ImAnHResiliencyMeasurer`
         1. Implementing the abstract class
