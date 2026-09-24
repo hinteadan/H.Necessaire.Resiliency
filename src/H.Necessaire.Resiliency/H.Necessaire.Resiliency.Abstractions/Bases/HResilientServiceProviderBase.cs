@@ -174,7 +174,7 @@ namespace H.Necessaire.Resiliency.Abstractions.Bases
                 return "ResilientServices is empty";
 
             return
-                services.All(s =>
+                services.Any(s =>
                     s != null
                     && latestMeasurements.TryGetValue(s.ID, out var svcmsr)
                     && svcmsr?.Measurement != null
